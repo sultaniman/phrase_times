@@ -3,7 +3,6 @@ defmodule PhraseTimes.Repo.Migrations.CreateMyTimezones do
 
   def change do
     create table(:my_timezones) do
-      add :city_name, :string
       add :city_id, references(:cities)
     end
 

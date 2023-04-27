@@ -3,14 +3,14 @@ defmodule PhraseTimes.Schemas.City do
   import Ecto.Changeset
 
   schema "cities" do
-    field :name, :string
+    field :city_name, :string
     field :tz, :string
   end
 
   @doc false
   def changeset(city, attrs) do
     city
-    |> cast(attrs, [:name, :tz])
-    |> validate_required([:name, :tz])
+    |> cast(attrs, [:city_name, :tz])
+    |> validate_required([:city_name, :tz])
   end
 end
