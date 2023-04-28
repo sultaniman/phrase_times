@@ -1,4 +1,4 @@
-defmodule PhraseTimes.Repo.Migrations.CreateMyTimezones do
+defmodule PhraseTimezones.Repo.Migrations.CreateMyTimezones do
   use Ecto.Migration
 
   def change do

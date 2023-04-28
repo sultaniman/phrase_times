@@ -7,18 +7,18 @@
 # General application configuration
 import Config
 
-config :phrase_times,
-  ecto_repos: [PhraseTimes.Repo]
+config :phrase_timezones,
+  ecto_repos: [PhraseTimezones.Repo]
 
 # Configures the endpoint
-config :phrase_times, PhraseTimesWeb.Endpoint,
+config :phrase_timezones, PhraseTimezonesWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [
-    formats: [html: PhraseTimesWeb.ErrorHTML, json: PhraseTimesWeb.ErrorJSON],
+    formats: [html: PhraseTimezonesWeb.ErrorHTML, json: PhraseTimezonesWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: PhraseTimes.PubSub,
-  live_view: [signing_salt: "Ld2UUFy2"]
+  pubsub_server: PhraseTimezones.PubSub,
+  live_view: [signing_salt: "2y9+U48+"]
 
 # Configures the mailer
 #
@@ -27,7 +27,10 @@ config :phrase_times, PhraseTimesWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :phrase_times, PhraseTimes.Mailer, adapter: Swoosh.Adapters.Local
+config :phrase_timezones, PhraseTimezones.Mailer, adapter: Swoosh.Adapters.Local
+
+# Configure TZ database
+config :elixir, :time_zone_database, Tz.TimeZoneDatabase
 
 # Configure esbuild (the version is required)
 config :esbuild,

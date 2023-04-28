@@ -1,4 +1,4 @@
-# PhraseTimes
+# PhraseTimezones
 
 To start your Phoenix server:
 
@@ -16,12 +16,3 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
   * Docs: https://hexdocs.pm/phoenix
   * Forum: https://elixirforum.com/c/phoenix-forum
   * Source: https://github.com/phoenixframework/phoenix
-
-
-## TODO
-
-
-1. Simple LiveView + Tailwind
-2. Ecto with two schemas Cities and Timezones
-3. A button with text - <Populate timezones> and a comment below TZ database will be used to populate
-4. Form to add a new timezone

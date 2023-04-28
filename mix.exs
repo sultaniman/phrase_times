@@ -1,9 +1,9 @@
-defmodule PhraseTimes.MixProject do
+defmodule PhraseTimezones.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :phrase_times,
+      app: :phrase_timezones,
       version: "0.1.0",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -18,7 +18,7 @@ defmodule PhraseTimes.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {PhraseTimes.Application, []},
+      mod: {PhraseTimezones.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
