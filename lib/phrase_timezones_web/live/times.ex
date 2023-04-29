@@ -84,12 +84,32 @@ defmodule PhraseTimezonesWeb.TimesLive do
     else
       new_timezone = MyTimezones.add_timezone(city_id)
 
-      {
-        :noreply,
-        socket
-        |> assign(:suggestions, [])
-        |> assign(:timezones, socket.assigns.timezones ++ [new_timezone])
-      }
+      if socket.assigns.converter_mode do
+        time =
+          socket.assigns.timezones
+          |> Enum.at(0)
+          |> Map.get(:city)
+          |> Map.get(:tz)
+          |> DateTime.now!()
+          |> DateTime.shift_zone!(new_timezone.city.tz)
+          |> Calendar.strftime("%I:%M:%S %p")
+
+        new_timezone = %{new_timezone | current_time: time}
+
+        {
+          :noreply,
+          socket
+          |> assign(:suggestions, [])
+          |> assign(:timezones, socket.assigns.timezones ++ [new_timezone])
+        }
+      else
+        {
+          :noreply,
+          socket
+          |> assign(:suggestions, [])
+          |> assign(:timezones, socket.assigns.timezones ++ [new_timezone])
+        }
+      end
     end
   end
 
