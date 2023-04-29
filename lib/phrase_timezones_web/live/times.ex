@@ -31,14 +31,17 @@ defmodule PhraseTimezonesWeb.TimesLive do
         Your timezones
       </.header>
       <div class="max-w-lg">
-        <ul class="divide-y divide-gray-200 rounded-xl border border-gray-200 shadow-sm">
+        <ul
+          id="my-timezones"
+          class="divide-y divide-gray-200 rounded-xl border border-gray-200 shadow-sm"
+        >
           <%= for timezone <- @timezones do %>
             <.live_component
               module={MyTimezoneItem}
               city_name={timezone.city.city_name}
               tz={timezone.city.tz}
               now={timezone.current_time}
-              id={"tz##{timezone.id}"}
+              id={"tz-#{timezone.id}"}
             />
           <% end %>
         </ul>

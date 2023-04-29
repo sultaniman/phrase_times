@@ -27,7 +27,7 @@ defmodule PhraseTimezonesWeb.Components.AddTimezone do
 
   def suggestion_list(assigns) do
     ~H"""
-    <div class="w-[75%] ml-1 mt-2 p-1">
+    <div class="w-[75%] ml-1 mt-2 p-1" id="timezone-suggestions">
       <%= for city <- @items do %>
         <a
           phx-click="add_city"
