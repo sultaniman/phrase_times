@@ -20,3 +20,7 @@ Please configure Postgres credentials in [`dev.exs`](https://github.com/sultanim
 
 To test please configure Postgres credentials in [`test.exs`](https://github.com/sultaniman/phrase_times/blob/main/config/test.exs#L9)
 then run `mix test`.
+
+## Short demo
+
+https://user-images.githubusercontent.com/354868/235318134-ada87c09-ca40-45e6-989d-abd71bf60e67.mov
