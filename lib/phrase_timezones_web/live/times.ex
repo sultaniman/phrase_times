@@ -1,9 +1,8 @@
 defmodule PhraseTimezonesWeb.TimesLive do
   alias PhraseTimezones.Cities
   use PhraseTimezonesWeb, :live_view
-  alias PhraseTimezones.Schemas.City
-  alias PhraseTimezones.MyTimezones
-  alias PhraseTimezonesWeb.Components.{AddTimezone, MyTimezone, TimeInput}
+  alias PhraseTimezones.{MyTimezones, TimezonesLogic}
+  alias PhraseTimezonesWeb.Components.{AddTimezone, MyTimezoneItem, TimeInput}
   @ticker_update_interval 1000
 
   @impl true
@@ -17,7 +16,7 @@ defmodule PhraseTimezonesWeb.TimesLive do
       socket
       |> assign(:timezones, MyTimezones.get_timezones())
       |> assign(:suggestions, [])
-      |> assign(:current_time, utc_now())
+      |> assign(:current_time, TimezonesLogic.utc_now())
       |> assign(:converter_mode, false)
     }
   end
@@ -35,7 +34,7 @@ defmodule PhraseTimezonesWeb.TimesLive do
         <ul class="divide-y divide-gray-200 rounded-xl border border-gray-200 shadow-sm">
           <%= for timezone <- @timezones do %>
             <.live_component
-              module={MyTimezone}
+              module={MyTimezoneItem}
               city_name={timezone.city.city_name}
               tz={timezone.city.tz}
               now={timezone.current_time}
@@ -53,14 +52,14 @@ defmodule PhraseTimezonesWeb.TimesLive do
   def handle_info({:delete_timezone, id}, socket) do
     MyTimezones.delete_timezone(id)
 
-    filtered_timezones =
+    timezones =
       socket.assigns.timezones
-      |> Enum.filter(fn tz -> tz.id != id end)
+      |> TimezonesLogic.exclude_timezone(id)
 
     {
       :noreply,
       socket
-      |> assign(:timezones, filtered_timezones)
+      |> assign(:timezones, timezones)
     }
   end
 
@@ -75,41 +74,21 @@ defmodule PhraseTimezonesWeb.TimesLive do
 
   @impl true
   def handle_info({:add_city, city_id}, socket) do
-    exists = socket.assigns.timezones |> Enum.find(fn tz -> tz.city_id == city_id end)
-
     # We want to prevent addind a timezone
     # if it already exists in liveview state
-    if exists do
+    if TimezonesLogic.has_timezone?(socket.assigns.timezones, city_id) do
       {:noreply, socket |> assign(:suggestions, [])}
     else
-      new_timezone = MyTimezones.add_timezone(city_id)
+      new_timezone =
+        socket.assigns.timezones
+        |> TimezonesLogic.add_city(socket.assigns.converter_mode, city_id)
 
-      if socket.assigns.converter_mode do
-        time =
-          socket.assigns.timezones
-          |> Enum.at(0)
-          |> Map.get(:city)
-          |> Map.get(:tz)
-          |> DateTime.now!()
-          |> DateTime.shift_zone!(new_timezone.city.tz)
-          |> Calendar.strftime("%I:%M:%S %p")
-
-        new_timezone = %{new_timezone | current_time: time}
-
-        {
-          :noreply,
-          socket
-          |> assign(:suggestions, [])
-          |> assign(:timezones, socket.assigns.timezones ++ [new_timezone])
-        }
-      else
-        {
-          :noreply,
-          socket
-          |> assign(:suggestions, [])
-          |> assign(:timezones, socket.assigns.timezones ++ [new_timezone])
-        }
-      end
+      {
+        :noreply,
+        socket
+        |> assign(:suggestions, [])
+        |> assign(:timezones, socket.assigns.timezones ++ [new_timezone])
+      }
     end
   end
 
@@ -120,16 +99,14 @@ defmodule PhraseTimezonesWeb.TimesLive do
     else
       filtered_timezones =
         socket.assigns.timezones
-        |> Enum.map(fn tz ->
-          %{tz | current_time: now_in(tz.city)}
-        end)
+        |> TimezonesLogic.update_current_times()
 
       :timer.send_after(@ticker_update_interval, self(), :tick)
 
       {
         :noreply,
         socket
-        |> assign(:current_time, utc_now())
+        |> assign(:current_time, TimezonesLogic.utc_now())
         |> assign(:timezones, filtered_timezones)
       }
     end
@@ -139,14 +116,7 @@ defmodule PhraseTimezonesWeb.TimesLive do
   def handle_info({:time_selected, time}, socket) do
     timezones_with_time =
       socket.assigns.timezones
-      |> Enum.map(fn tz ->
-        converted =
-          time
-          |> DateTime.shift_zone!(tz.city.tz)
-          |> Calendar.strftime("%I:%M:%S %p")
-
-        %{tz | current_time: converted}
-      end)
+      |> TimezonesLogic.shift_current_times(time)
 
     {
       :noreply,
@@ -169,16 +139,5 @@ defmodule PhraseTimezonesWeb.TimesLive do
     else
       {:noreply, socket}
     end
-  end
-
-  def now_in(%City{} = city) do
-    city.tz
-    |> DateTime.now!()
-    |> Calendar.strftime("%I:%M:%S %p")
-  end
-
-  def utc_now() do
-    DateTime.utc_now()
-    |> Calendar.strftime("%I:%M:%S")
   end
 end

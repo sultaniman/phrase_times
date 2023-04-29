@@ -1,4 +1,4 @@
-defmodule PhraseTimezonesWeb.Components.MyTimezone do
+defmodule PhraseTimezonesWeb.Components.MyTimezoneItem do
   @moduledoc false
   use PhraseTimezonesWeb, :live_component
 
