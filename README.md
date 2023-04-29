@@ -1,3 +1,5 @@
+[![Elixir CI](https://github.com/sultaniman/phrase_times/actions/workflows/elixir.yml/badge.svg)](https://github.com/sultaniman/phrase_times/actions/workflows/elixir.yml)
+
 # PhraseTimezones
 
 To start your Phoenix server:
