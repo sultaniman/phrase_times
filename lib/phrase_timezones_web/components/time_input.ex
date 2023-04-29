@@ -1,7 +1,6 @@
 defmodule PhraseTimezonesWeb.Components.TimeInput do
   @moduledoc false
   use PhraseTimezonesWeb, :live_component
-  @interval 1000
 
   @impl true
   @spec render(any) :: Phoenix.LiveView.Rendered.t()

@@ -51,14 +51,6 @@ defmodule PhraseTimezonesWeb.TimesLive do
 
   @impl true
   def handle_info({:delete_timezone, id}, socket) do
-    id =
-      id
-      |> String.split("#")
-      |> Enum.at(1)
-      |> Integer.parse()
-      |> Tuple.to_list()
-      |> Enum.at(0)
-
     MyTimezones.delete_timezone(id)
 
     filtered_timezones =
@@ -85,6 +77,8 @@ defmodule PhraseTimezonesWeb.TimesLive do
   def handle_info({:add_city, city_id}, socket) do
     exists = socket.assigns.timezones |> Enum.find(fn tz -> tz.city_id == city_id end)
 
+    # We want to prevent addind a timezone
+    # if it already exists in liveview state
     if exists do
       {:noreply, socket |> assign(:suggestions, [])}
     else

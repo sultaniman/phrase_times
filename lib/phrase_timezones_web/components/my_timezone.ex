@@ -1,7 +1,6 @@
 defmodule PhraseTimezonesWeb.Components.MyTimezone do
   @moduledoc false
   use PhraseTimezonesWeb, :live_component
-  @interval 1000
 
   @impl true
   @spec render(any) :: Phoenix.LiveView.Rendered.t()
@@ -20,7 +19,15 @@ defmodule PhraseTimezonesWeb.Components.MyTimezone do
 
   @impl true
   def handle_event("on_delete", _params, socket) do
-    send(self(), {:delete_timezone, socket.assigns.id})
+    id =
+      socket.assigns.id
+      |> String.split("#")
+      |> Enum.at(1)
+      |> Integer.parse()
+      |> Tuple.to_list()
+      |> Enum.at(0)
+
+    send(self(), {:delete_timezone, id})
     {:noreply, socket}
   end
 end

@@ -2,7 +2,6 @@ defmodule PhraseTimezonesWeb.Components.AddTimezone do
   @moduledoc false
   use PhraseTimezonesWeb, :live_component
   @min_lookup_chars 3
-  @max_lookup_chars 20
 
   def render(assigns) do
     ~H"""
