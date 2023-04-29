@@ -1,7 +1,6 @@
 alias PhraseTimezones.Repo
 alias PhraseTimezones.Schemas.{City, MyTimezone}
 
-
 cities_with_timezones =
   TzExtra.time_zone_identifiers()
   |> Enum.map(fn tz_name ->
@@ -17,5 +16,5 @@ end)
 
 # Add first 5 cities to my timezones
 for id <- 1..5 do
-  Repo.insert! MyTimezone.changeset(%MyTimezone{}, %{city_id: id})
+  Repo.insert!(MyTimezone.changeset(%MyTimezone{}, %{city_id: id}))
 end

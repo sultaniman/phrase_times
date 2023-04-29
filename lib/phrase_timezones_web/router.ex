@@ -19,7 +19,7 @@ defmodule PhraseTimezonesWeb.Router do
 
     get "/", PageController, :home
 
-    live "/times", TimesLive
+    live "/timezones", TimesLive
   end
 
   # Other scopes may use custom stacks.
