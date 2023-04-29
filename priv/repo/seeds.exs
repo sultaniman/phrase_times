@@ -1,11 +1,21 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     PhraseTimezones.Repo.insert!(%PhraseTimezones.SomeSchema{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
+alias PhraseTimezones.Repo
+alias PhraseTimezones.Schemas.{City, MyTimezone}
+
+
+cities_with_timezones =
+  TzExtra.time_zone_identifiers()
+  |> Enum.map(fn tz_name ->
+    %{
+      city_name: tz_name |> String.split("/") |> Enum.at(1),
+      tz: tz_name
+    }
+  end)
+
+Repo.transaction(fn ->
+  Repo.insert_all(City, cities_with_timezones)
+end)
+
+# Add first 5 cities to my timezones
+for id <- 1..5 do
+  Repo.insert! MyTimezone.changeset(%MyTimezone{}, %{city_id: id})
+end
