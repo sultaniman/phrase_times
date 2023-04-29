@@ -6,10 +6,7 @@ import Config
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :phrase_timezones, PhraseTimezones.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "phrase_timezones_test#{System.get_env("MIX_TEST_PARTITION")}",
+  url: "ecto://postgres:postgres@localhost/timezones_test",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
 
