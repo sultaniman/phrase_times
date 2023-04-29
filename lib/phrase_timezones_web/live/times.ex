@@ -3,7 +3,7 @@ defmodule PhraseTimezonesWeb.TimesLive do
   use PhraseTimezonesWeb, :live_view
   alias PhraseTimezones.Schemas.City
   alias PhraseTimezones.MyTimezones
-  alias PhraseTimezonesWeb.Components.{AddTimezone, MyTimezone}
+  alias PhraseTimezonesWeb.Components.{AddTimezone, MyTimezone, TimeInput}
   @ticker_update_interval 1000
 
   @impl true
@@ -17,7 +17,8 @@ defmodule PhraseTimezonesWeb.TimesLive do
       socket
       |> assign(:timezones, MyTimezones.get_timezones())
       |> assign(:suggestions, [])
-      |> assign(:auto_update, true)
+      |> assign(:current_time, utc_now())
+      |> assign(:converter_mode, false)
     }
   end
 
@@ -26,6 +27,7 @@ defmodule PhraseTimezonesWeb.TimesLive do
   def render(assigns) do
     ~H"""
     <div class="bg-transparent">
+      <.live_component module={TimeInput} time={@current_time} id="select-time" />
       <.header>
         Your timezones
       </.header>
@@ -42,11 +44,7 @@ defmodule PhraseTimezonesWeb.TimesLive do
           <% end %>
         </ul>
       </div>
-      <.live_component
-        module={AddTimezone}
-        suggestions={@suggestions}
-        id="add-timezone"
-      />
+      <.live_component module={AddTimezone} suggestions={@suggestions} id="add-timezone" />
     </div>
     """
   end
@@ -86,10 +84,12 @@ defmodule PhraseTimezonesWeb.TimesLive do
   @impl true
   def handle_info({:add_city, city_id}, socket) do
     exists = socket.assigns.timezones |> Enum.find(fn tz -> tz.city_id == city_id end)
+
     if exists do
       {:noreply, socket |> assign(:suggestions, [])}
     else
       new_timezone = MyTimezones.add_timezone(city_id)
+
       {
         :noreply,
         socket
@@ -101,23 +101,70 @@ defmodule PhraseTimezonesWeb.TimesLive do
 
   @impl true
   def handle_info(:tick, socket) do
-    filtered_timezones =
-      socket.assigns.timezones
-      |> Enum.map(fn tz ->
-        %{tz | current_time: now_in(tz.city)}
-      end)
+    if socket.assigns.converter_mode do
+      {:noreply, socket}
+    else
+      filtered_timezones =
+        socket.assigns.timezones
+        |> Enum.map(fn tz ->
+          %{tz | current_time: now_in(tz.city)}
+        end)
 
       :timer.send_after(@ticker_update_interval, self(), :tick)
+
+      {
+        :noreply,
+        socket
+        |> assign(:current_time, utc_now())
+        |> assign(:timezones, filtered_timezones)
+      }
+    end
+  end
+
+  @impl true
+  def handle_info({:time_selected, time}, socket) do
+    timezones_with_time =
+      socket.assigns.timezones
+      |> Enum.map(fn tz ->
+        converted =
+          time
+          |> DateTime.shift_zone!(tz.city.tz)
+          |> Calendar.strftime("%I:%M:%S %p")
+
+        %{tz | current_time: converted}
+      end)
+
     {
       :noreply,
       socket
-      |> assign(:timezones, filtered_timezones)
+      |> assign(:converter_mode, true)
+      |> assign(:timezones, timezones_with_time)
     }
+  end
+
+  @impl true
+  def handle_info(:reset_and_resume, socket) do
+    if socket.assigns.converter_mode do
+      :timer.send_after(@ticker_update_interval, self(), :tick)
+
+      {
+        :noreply,
+        socket
+        |> assign(:converter_mode, false)
+      }
+    else
+      {:noreply, socket}
+    end
   end
 
   def now_in(%City{} = city) do
     city.tz
     |> DateTime.now!()
     |> Calendar.strftime("%I:%M:%S %p")
+  end
+
+  def utc_now() do
+    DateTime.utc_now()
+    |> Calendar.strftime("%I:%M:%S")
   end
 end

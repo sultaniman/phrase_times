@@ -12,7 +12,7 @@ defmodule PhraseTimezonesWeb.Components.SuggestTimezone do
   end
 
   def handle_event("on_delete", _params, socket) do
-    send self(), {:delete_timezone, socket.assigns.id}
+    send(self(), {:delete_timezone, socket.assigns.id})
     {:noreply, socket}
   end
 end

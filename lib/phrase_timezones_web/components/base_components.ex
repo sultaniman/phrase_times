@@ -2,6 +2,7 @@ defmodule PhraseTimezonesWeb.BaseComponents do
   @moduledoc false
   use Phoenix.Component
   alias DateTime
+
   @doc """
   Renders a close button.
 
@@ -15,6 +16,7 @@ defmodule PhraseTimezonesWeb.BaseComponents do
   attr :rest, :global, include: ~w(disabled form name value)
 
   slot :inner_block, required: true
+
   def close_button(assigns) do
     ~H"""
     <button

@@ -2,7 +2,7 @@ import Config
 
 # Configure your database
 config :phrase_timezones, PhraseTimezones.Repo,
-url: "ecto://postgres:postgres@localhost/phrase_times_dev",
+  url: "ecto://postgres:postgres@localhost/phrase_times_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

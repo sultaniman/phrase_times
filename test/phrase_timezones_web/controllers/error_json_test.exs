@@ -2,7 +2,9 @@ defmodule PhraseTimezonesWeb.ErrorJSONTest do
   use PhraseTimezonesWeb.ConnCase, async: true
 
   test "renders 404" do
-    assert PhraseTimezonesWeb.ErrorJSON.render("404.json", %{}) == %{errors: %{detail: "Not Found"}}
+    assert PhraseTimezonesWeb.ErrorJSON.render("404.json", %{}) == %{
+             errors: %{detail: "Not Found"}
+           }
   end
 
   test "renders 500" do
