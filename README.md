@@ -1,20 +1,22 @@
 [![Elixir CI](https://github.com/sultaniman/phrase_times/actions/workflows/elixir.yml/badge.svg)](https://github.com/sultaniman/phrase_times/actions/workflows/elixir.yml)
 
-# PhraseTimezones
+# Time converter between timezones
 
-To start your Phoenix server:
+A web application that converts entered time between chosen time zones.
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+## Configuration
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+Please configure Postgres credentials in [`dev.exs`](https://github.com/sultaniman/phrase_times/blob/main/config/dev.exs#L5)
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+## Running
 
-## Learn more
+1. Install dependencies `mix deps.get`,
+2. Apply migrations `mix ecto.migrate`,
+3. To have initial data in the app please seed database using `mix run priv/repo/seeds.exs`,
+4. Running the server `mix.phx server`,
+5. Open the following URL `http://localhost:4000/timezones` in your browser.
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+## Testing
+
+To test please configure Postgres credentials in [`test.exs`](https://github.com/sultaniman/phrase_times/blob/main/config/test.exs#L9)
+then run `mix test`.
