@@ -4,6 +4,9 @@ defmodule PhraseTimezonesWeb.MyTimezoneLiveTest do
   import Phoenix.LiveViewTest
   import PhraseTimezonesWeb.TimezonesFixtures
 
+  alias PhraseTimezones.MyTimezones
+  alias PhraseTimezones.Cities
+
   defp create_my_timezone(_) do
     prepare_timezones()
     :ok
@@ -67,6 +70,38 @@ defmodule PhraseTimezonesWeb.MyTimezoneLiveTest do
         |> Floki.find(".timezone-item")
 
       assert length(items) == 8
+    end
+
+    test "it prevents adding the same timezone again", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/timezones")
+      # we have added Cairo during setup
+      city = Cities.find_by_name("cairo") |> Enum.at(0)
+      send(view.pid, {:add_city, city.id})
+      {:ok, updated_view, _html} = live(conn, ~p"/timezones")
+
+      items =
+        updated_view
+        |> render()
+        |> Floki.parse_document!()
+        |> Floki.find(".timezone-item")
+
+      assert length(items) == 10
+    end
+
+    test "adding timezone works", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/timezones")
+      # we have added Cairo during setup
+      city = Cities.find_by_name("Windhoek") |> Enum.at(0)
+      send(view.pid, {:add_city, city.id})
+      {:ok, _view, html} = live(conn, ~p"/timezones")
+
+      items =
+        html
+        |> Floki.parse_document!()
+        |> Floki.find(".timezone-item")
+
+      assert length(MyTimezones.get_timezones()) == 11
+      assert length(items) == 11
     end
   end
 end

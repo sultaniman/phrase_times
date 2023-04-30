@@ -6,7 +6,7 @@ defmodule PhraseTimezonesWeb.TimezonesFixtures do
   def prepare_timezones do
     city_names =
       TzExtra.time_zone_identifiers()
-      |> Enum.take(10)
+      |> Enum.take(20)
       |> Enum.map(fn tz_name ->
         city_name = tz_name |> String.split("/") |> Enum.at(1)
 
@@ -19,6 +19,7 @@ defmodule PhraseTimezonesWeb.TimezonesFixtures do
       end)
 
     city_names
+    |> Enum.take(10)
     |> Enum.map(fn city_name ->
       city =
         city_name
