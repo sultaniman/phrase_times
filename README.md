@@ -23,4 +23,4 @@ then run `mix test`.
 
 ## Short demo
 
-https://user-images.githubusercontent.com/354868/235318134-ada87c09-ca40-45e6-989d-abd71bf60e67.mov
+https://user-images.githubusercontent.com/354868/235350801-45bd29a7-0306-46b4-9af6-df6c17b6ec6b.mov
