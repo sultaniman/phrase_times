@@ -24,3 +24,19 @@ then run `mix test`.
 ## Short demo
 
 https://user-images.githubusercontent.com/354868/235350801-45bd29a7-0306-46b4-9af6-df6c17b6ec6b.mov
+
+## Structure
+
+Live view `PhraseTimezonesWeb.TimesLive` consists of live components which live under `PhraseTimezonesWeb.Components`
+some basic logic is offloaded from liveview to [utility module](https://github.com/sultaniman/phrase_times/blob/main/lib/phrase_timezones/timezones_logic.ex) in context app.
+Ecto schemas and contexts are minimal to support only what is needed and to avoid boilerplate.
+
+* `PhraseTimezonesWeb.Components` (top down order according to UI)
+    * `TimeInput` - autocomplete suggestions,
+    * `AddTimezone` - component with autocomplete to search and add new timezones,
+    * `MyTimezoneItem` - list item component to display added timezones.
+
+## Timezone database
+
+When [seeding database ](https://github.com/sultaniman/phrase_times/blob/main/priv/repo/seeds.exs) [Tz](https://github.com/mathieuprog/tz) and [TzExtra](https://github.com/mathieuprog/tz) libraries
+used to get timezones and to add initial cities with timezones.
