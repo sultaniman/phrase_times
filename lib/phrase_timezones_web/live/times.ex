@@ -97,6 +97,7 @@ defmodule PhraseTimezonesWeb.TimesLive do
         socket
         |> assign(:suggestions, [])
         |> assign(:timezones, socket.assigns.timezones ++ [new_timezone])
+        |> put_flash(:info, "Timezone has beed successfully added")
       }
     end
   end
