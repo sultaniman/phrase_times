@@ -63,6 +63,7 @@ defmodule PhraseTimezonesWeb.TimesLive do
       :noreply,
       socket
       |> assign(:timezones, timezones)
+      |> put_flash(:info, "Timezone has been deleted")
     }
   end
 
@@ -80,7 +81,12 @@ defmodule PhraseTimezonesWeb.TimesLive do
     # We want to prevent addind a timezone
     # if it already exists in liveview state
     if TimezonesLogic.has_timezone?(socket.assigns.timezones, city_id) do
-      {:noreply, socket |> assign(:suggestions, [])}
+      {
+        :noreply,
+        socket
+        |> assign(:suggestions, [])
+        |> put_flash(:error, "Timezone has already beed added")
+      }
     else
       new_timezone =
         socket.assigns.timezones
